@@ -1,0 +1,32 @@
+---
+- name: add influxdb repository 
+  copy: 
+    src: influxdb.repo
+    dest: /etc/yum.repos.d/
+    owner: root
+    group: root
+    mode: 0644
+  tags: [configuration]
+
+- name: install packages
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - influxdb
+  tags: [packages]
+
+- name: set listen IP
+  set_fact:
+    listen_ip: "{{ ansible_eth0['ipv4']['address'] }}"
+
+- name: start influxdb service
+  service: 
+    name: influxdb
+    enabled: yes
+    state: started
+  tags: [service] 
+
+- name: debug
+  debug:
+    msg: "{{ listen_ip }}"

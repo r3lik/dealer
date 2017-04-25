@@ -1,0 +1,36 @@
+---
+- name: add Grafana repository
+  copy:
+    src: grafana.repo
+    dest: /etc/yum.repos.d/
+    owner: root
+    group: root
+    mode: 0644
+  tags: [configuration]
+
+- name: install packages
+  package: 
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - grafana
+  tags: [packages]
+
+- name: Create dashboard directory
+  file:
+    path: /var/lib/grafana/dashboards
+    state: directory
+    mode: 0755
+    owner: "grafana"
+    group: "grafana"
+
+- name: set listen IP variable/fact
+  set_fact:
+    listen_ip: "{{ ansible_eth0['ipv4']['address'] }}"
+
+- name: grafana service control
+  service:
+    name: grafana-server
+    enabled: yes
+    state: started
+  tags: [service]

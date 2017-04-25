@@ -1,0 +1,29 @@
+---
+- name: install Telegraf package
+  package:
+    name: 'telegraf'
+    state: latest
+  tags: [packages]
+
+- name: telegraf service start
+  service:
+    name: 'telegraf'
+    enabled: yes
+    state: started
+  tags: [service]
+
+- name: install SNMP packages
+  package:                                                                                                                    
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - net-snmp
+    - net-snmp-utils
+  tags: [packages]
+
+- name: snmp service start
+  service:
+    name: 'snmpd'
+    enabled: yes
+    state: started
+  tags: [service]

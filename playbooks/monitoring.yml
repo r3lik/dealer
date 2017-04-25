@@ -1,0 +1,7 @@
+---
+- hosts: utility
+  roles:
+    - role: 'influxdb'
+    - role: 'grafana'
+    - role: 'telegraf'
+  remote_user: root 
